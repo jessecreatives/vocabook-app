@@ -7,7 +7,7 @@ import './App.css';
 const App = () => {
   return (
     <>
-      <Router>
+      <Router basename="/vocabook-app">
         <Switch>
           <Route exact path="/">
             <Languages />
