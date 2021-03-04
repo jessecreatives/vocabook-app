@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/Vocabook-App/static/css/main.432d46c8.chunk.css",
+    "main.css": "/Vocabook-App/static/css/main.1325b519.chunk.css",
     "main.js": "/Vocabook-App/static/js/main.c02cdfa1.chunk.js",
     "main.js.map": "/Vocabook-App/static/js/main.c02cdfa1.chunk.js.map",
     "runtime-main.js": "/Vocabook-App/static/js/runtime-main.321a396e.js",
@@ -8,13 +8,13 @@
     "static/js/2.6257ef7e.chunk.js": "/Vocabook-App/static/js/2.6257ef7e.chunk.js",
     "static/js/2.6257ef7e.chunk.js.map": "/Vocabook-App/static/js/2.6257ef7e.chunk.js.map",
     "index.html": "/Vocabook-App/index.html",
-    "static/css/main.432d46c8.chunk.css.map": "/Vocabook-App/static/css/main.432d46c8.chunk.css.map",
+    "static/css/main.1325b519.chunk.css.map": "/Vocabook-App/static/css/main.1325b519.chunk.css.map",
     "static/js/2.6257ef7e.chunk.js.LICENSE.txt": "/Vocabook-App/static/js/2.6257ef7e.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.321a396e.js",
     "static/js/2.6257ef7e.chunk.js",
-    "static/css/main.432d46c8.chunk.css",
+    "static/css/main.1325b519.chunk.css",
     "static/js/main.c02cdfa1.chunk.js"
   ]
 }
