@@ -5,7 +5,7 @@ import '../App.css';
 
 export default function Header({lang}) {
     return (
-        <nav className="text-center">
+        <nav className="text-center mb-5">
           <div className="container position-relative py-3">
                 <Link className="nav-link" to="/">
                         <button className="material-icons fs2 secondary back">
