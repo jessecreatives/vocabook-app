@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
-import { meta } from '../data';
 
-export default function Modal({ lang , onSubmitNewVocab, onCloseModal}) {
+export default function Modal({ meta, lang , onSubmitNewVocab, onCloseModal}) {
     const [vocab, setVocab] = useState({
         title: '',
         pronounce: '',

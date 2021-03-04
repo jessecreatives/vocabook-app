@@ -4,7 +4,8 @@ import Header from './Header'
 import Sidebar from './Sidebar';
 import Detail from './Detail';
 import Modal from './Modal';
-import {data} from '../data';
+import { data } from '../data';
+import { meta } from '../data';
 
 export default function Vocabulary() {
     const { id } = useParams();
@@ -73,22 +74,40 @@ export default function Vocabulary() {
     return (
         <>
             {/* modal */}
-            {isModalOpen && <Modal lang={lang} onSubmitNewVocab={handleOnSubmitNewVocab} onCloseModal={handleOnCloseModal} />}
+            {isModalOpen && <Modal meta={meta} lang={lang} onSubmitNewVocab={handleOnSubmitNewVocab} onCloseModal={handleOnCloseModal} />}
             <Header lang={lang} /> 
             <div className="row container position-relative">
                 {/* sidebar */ }
                 <Sidebar words={words} onClick={handleOnClick} onClickAddVocab={handleOnClickAddVocab} />
                 {/* detail */ }
                 { isDetailOpen && (
-                    <Detail activeWord={ activeWord } handleOnDelete={handleOnDelete}>
-                    <input type="text" name="title" value={ activeWord.title } onChange={handleOnChange}/>
-                    <input type="text" name="pronounce" value={ activeWord.pronounce } onChange={ handleOnChange } />
-                    { activeWord.definitions.map(definition => (
-                        <input key={definition.id} type="text" name={definition.id} value={ definition.value } onChange={ handleOnDefChange } />
-                    )) }
-                    { activeWord.examples.map(example => (
-                        <input key={example.id} type="text" name={example.id} value={ example.value } onChange={ handleOnExampleChange } />
-                    ))}
+                    <Detail meta={meta} lang={lang} activeWord={ activeWord } handleOnDelete={handleOnDelete}>
+                    <form>
+                            <div className="form-group align-items-start">
+                                <label htmlFor="title">{ meta[lang.id].title }</label>
+                                <input type="text" name="title" value={ activeWord.title } onChange={ handleOnChange } />
+                            </div>
+                        <div className="form-group align-items-start">
+                            <label htmlFor="pronounce">{ meta[lang.id].pronounce }</label>
+                            <input type="text" name="pronounce" value={ activeWord.pronounce } onChange={ handleOnChange } />
+                        </div>
+                        <div className="form-group align-items-start">
+                            <label htmlFor="definitions">{ meta[lang.id].definition }</label>
+                            <div className="d-flex flex-column">
+                                { activeWord.definitions.map(definition => (
+                                    <input key={definition.id} type="text" name={definition.id} value={ definition.value } onChange={ handleOnDefChange } />
+                                )) }
+                            </div>
+                        </div>
+                        <div className="form-group align-items-start">
+                            <label htmlFor="examples">{ meta[lang.id].example }</label>
+                            <div className="d-flex flex-column">
+                                { activeWord.examples.map(example => (
+                                    <input key={example.id} type="text" name={example.id} value={ example.value } onChange={ handleOnExampleChange } />
+                                ))}
+                            </div>
+                        </div>
+                    </form>
                 </Detail>
                 )}
             </div>
