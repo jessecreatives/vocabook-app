@@ -20,7 +20,13 @@ export default function Vocabulary() {
         examples: []
     });
 
-    const [words, setWords] = useState(lang.words);
+    const [words, setWords] = useState(
+        JSON.parse(localStorage.getItem('vocabs')) || lang.words
+    );
+
+    useEffect(() => {
+        localStorage.setItem('vocabs', JSON.stringify(words));
+    }, [words]);
     
     useEffect(() => {
         setWords(words.map(word => word.id === activeWord.id ? { ...word, ...activeWord } : word))
