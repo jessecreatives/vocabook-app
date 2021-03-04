@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState} from 'react';
 
 export default function Modal({ meta, lang , onSubmitNewVocab, onCloseModal}) {
     const [vocab, setVocab] = useState({
