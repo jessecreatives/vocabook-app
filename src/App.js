@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {HashRouter as Router, Switch, Route, Link, useLocation} from 'react-router-dom';
+import {HashRouter as Router, Switch, Route} from 'react-router-dom';
 import Languages from './components/Languages';
 import Vocabulary from './components/Vocabulary';
 import Loading from './components/Loading';

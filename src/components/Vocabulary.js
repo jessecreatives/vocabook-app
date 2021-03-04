@@ -21,12 +21,12 @@ export default function Vocabulary() {
     });
 
     const [words, setWords] = useState(
-        JSON.parse(localStorage.getItem('vocabs')) || lang.words
+        JSON.parse(localStorage.getItem(lang.id)) || lang.words
     );
 
     useEffect(() => {
-        localStorage.setItem('vocabs', JSON.stringify(words));
-    }, [words]);
+        localStorage.setItem([lang.id], JSON.stringify(words));
+    }, [lang, words]);
     
     useEffect(() => {
         setWords(words.map(word => word.id === activeWord.id ? { ...word, ...activeWord } : word))
