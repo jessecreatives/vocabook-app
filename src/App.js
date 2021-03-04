@@ -7,7 +7,7 @@ import './App.css';
 const App = () => {
   return (
     <>
-      <Router basename="/vocabook-app">
+      <Router basename={process.env.PUBLIC_URL}>
         <Switch>
           <Route exact path="/">
             <Languages />
