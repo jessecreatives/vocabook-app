@@ -250,11 +250,17 @@ button {
 }
 .close {
   color: var(--white);
-  font-size: 4rem;
+  font-size: 2rem;
   position: absolute;
-  right: -6rem;
-  top: -6rem;
+  right: -1rem;
+  top: -1rem;
   z-index: 100;
+}
+@media (min-width: 768px) {
+  .close {
+    right: -6rem;
+    top: -6rem;
+  }
 }
 /* detail */
 .detail input {
