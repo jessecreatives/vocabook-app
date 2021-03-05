@@ -290,7 +290,7 @@ button {
   height: 100vh;
   padding-top: 6rem;
   z-index: 1000;
-  /* animation: fade 4s ease-in-out 1s forwards; */
+  animation: fade 4s ease-in-out 1s forwards;
 }
 @media (min-width: 992px) {
   .loading.row {
