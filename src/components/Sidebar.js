@@ -4,7 +4,7 @@ import AddButton from './AddButton';
 
 export default function Sidebar({words, onClick, onClickAddVocab}) {
     return (
-        <div className="col-12 col-md-8 offset-md-2 offset-lg-0 col-lg-4">
+        <div className="col-12 col-md-8 offset-md-2 offset-lg-0 col-lg-4 px-0">
             <div className="bg-white">
                 <ul>
                     { words.map(word => (

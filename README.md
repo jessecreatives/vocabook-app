@@ -1,70 +1,26 @@
-# Getting Started with Create React App
+# VocaBook: A streamlined vocabulary builder app
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Introduction  
+VocaBook is a simple app that helps you build your vocabulary in any language you learn.  
+It's effective because it is developed by a language learner who has decades of learning experience.  
 
-## Available Scripts
+## To make it simple and flexible  
 
-In the project directory, you can run:
+### The problems  
+I have tried multiple vocabulary builder apps and all of them just disappointed me because:
 
-### `npm start`
+1. **They are complex both in functionality and look**. I just want to log a new word/expressioin I encounter into a place and be able to get back and take a look later. However, those apps tend to have loads of functionalities and UI elements that are noisy.
+2. **They tend to support only one language**. But there are so many people who are learning multiple languages at the same time.
+3. **They are not quite flexible**. Most of the mentioned apps have several dictionaries preinstalled. They work by throwing the words that you have never met or will rarely use into your face. No, the best approach is to log your own words that you encountered in a real environment.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Not a fix, but an ENHANCEMENT
+Vocabook has the following features that make it not a game player, but a game changer:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. **Only the core functionalities, add/manage languages, add/manage vocabulary and filtering, are kept**. This makes it very easy to use and very effective at the same time. No noise. No fuss.
+2. **It supports any number of languages**. You can add as many languages as necessary and they are stored separately.
+3. **It is highly flexible**. Every word/expression is added and managed by yourself and no dictionary is pre-installed, it is flexible and lightweight.
 
-### `npm test`
+### The deployed app (under development)
+You can find the app (under development) at:
+https://vocabook.app.jessecreatives.com/
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

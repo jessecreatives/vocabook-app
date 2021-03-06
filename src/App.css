@@ -250,11 +250,17 @@ button {
 }
 .close {
   color: var(--white);
-  font-size: 4rem;
+  font-size: 2rem;
   position: absolute;
-  right: -6rem;
-  top: -6rem;
+  right: -1rem;
+  top: -1rem;
   z-index: 100;
+}
+@media (min-width: 768px) {
+  .close {
+    right: -6rem;
+    top: -6rem;
+  }
 }
 /* detail */
 .detail input {
@@ -282,7 +288,7 @@ button {
 .loading {
   width: 100%;
   height: 100vh;
-  padding-top: 8rem;
+  padding-top: 6rem;
   z-index: 1000;
   animation: fade 4s ease-in-out 1s forwards;
 }
@@ -318,7 +324,7 @@ button {
 }
 .loading .text-container {
   height: 40vh;
-  margin: 8rem auto 0;
+  margin: 6rem auto 0;
   text-align: center;
 }
 .loading .text-container .text-inner {
