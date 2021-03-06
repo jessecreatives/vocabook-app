@@ -1,7 +1,10 @@
 # VocaBook: A streamlined vocabulary builder app
 
+## Introduction  
 VocaBook is a simple app that helps you build your vocabulary in any language you learn.  
 It's effective because it is developed by a language learner who has decades of learning experience.  
+
+## To make it simple and flexible
 I have tried multiple vocabulary builder apps and all of them just disappointed me because:
 
 1. They are complex both in functionality and look. I just want to log a new word/expressioin I encounter into a place and be able to get back and take a look later. However, those apps tend to have loads of functionalities and UI elements that are noisy.
