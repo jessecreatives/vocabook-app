@@ -7,6 +7,8 @@ import Modal from './Modal';
 import { data } from '../data';
 import { meta } from '../data';
 
+const today = new Date();
+
 // helper functions
 const convertToDays = (milliseconds) => milliseconds / 1000 / 60 / 60 / 24;
 
@@ -29,7 +31,15 @@ const extractYYYYMMDD = (date) => {
         dayStr = `${day}`;
     }
 
+    console.log(`${year}-${monthStr}-${dayStr}`);
+    
+
     return `${year}-${monthStr}-${dayStr}`;
+}
+
+const FILTER_MAP = {
+    'today': word => word.date = extractYYYYMMDD(today),
+    'thisWeek': word => convertToDays(today - new Date(word.date)) <= 7,
 }
 
 export default function Vocabulary() {
@@ -45,43 +55,15 @@ export default function Vocabulary() {
         examples: []
     });
 
-    const [words, setWords] = useState(
-        JSON.parse(localStorage.getItem(lang.id)) || lang.words
-    );
-
-    const [dateValue, setDateValue] = useState('today');
-
-    useEffect(() => {
-        localStorage.setItem([lang.id], JSON.stringify(words));
-    }, [lang, words]);
+    const [words, setWords] = useState(lang.words)
     
     useEffect(() => {
         setWords(words.map(word => word.id === activeWord.id ? { ...word, ...activeWord } : word))
     }, [activeWord]);
 
-    let filteredWords;
-
-    useEffect(() => {
-        filteredWords = getFilteredWords(dateValue);
-        console.log(filteredWords);
-        
-    }, []);
-
     const [isDetailOpen, setIsDetailOpen] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const getFilteredWords = (value) => {
-        const today = new Date();
-        switch(value) {
-            case 'today':
-                return words.filter(word => word.date = extractYYYYMMDD(today));
-            case 'thisWeek':
-                return words.filter(word => convertToDays(today - new Date(word.date)) <= 7);
-            default:
-                return words;
-        }
-    }
 
     const handleOnClick = (e) => {
         const word = words.find(word => word.id.toString() === e.target.name);
@@ -124,9 +106,25 @@ export default function Vocabulary() {
         setWords(words.filter(w => w.id !== word.id));
     }
 
-    const handleOnDateSelectChange = (e) => {
-        setDateValue(e.target.value);
+    const [filter, setFilter] = useState('today');
+
+    const handleOnDateSelectChange = (filter) => {
+        setFilter(filter);        
     }
+
+    // let filteredWords;
+
+    // const handleOnDateSelectChange = (dateValue) => {
+    //     const today = new Date();
+    //     switch(dateValue) {
+    //         case 'today':
+    //             filteredWords = words.filter(word => word.date = extractYYYYMMDD(today));
+    //         case 'thisWeek':
+    //             filteredWords = words.filter(word => convertToDays(today - new Date(word.date)) <= 7);
+    //         default:
+    //             return words;
+    //     }
+    // }
 
     return (
         <>
@@ -136,9 +134,9 @@ export default function Vocabulary() {
             <div className="row container position-relative">
                 {/* sidebar */ }
                 <Sidebar 
-                    words={filteredWords} 
+                    words={words.filter(FILTER_MAP[filter])} 
                     onClick={handleOnClick} 
-                    onClickAddVocab={handleOnClickAddVocab} dateValue={dateValue}
+                    onClickAddVocab={handleOnClickAddVocab}
                     onDateSelectChange={handleOnDateSelectChange} 
                 />
                 {/* detail */ }

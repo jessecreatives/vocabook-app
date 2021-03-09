@@ -74,6 +74,7 @@ export const data = {
             words: [
                 {
                     id: 0,
+                    date: "2021-03-06",
                     title: 'pretext',
                     pronounce: 'pri-tekst',
                     definitions: [
@@ -95,6 +96,7 @@ export const data = {
                 },
                 {
                     id: 1,
+                    date: "2021-03-06",
                     title: 'hard',
                     pronounce: 'ha-d',
                     definitions: [

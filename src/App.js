@@ -8,7 +8,7 @@ import './App.css';
 const App = () => {
   return (
     <>
-      <Loading />
+      {/* <Loading /> */}
       <Router>
         <Switch>
           <Route exact path="/">
