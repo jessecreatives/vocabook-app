@@ -7,6 +7,31 @@ import Modal from './Modal';
 import { data } from '../data';
 import { meta } from '../data';
 
+// helper functions
+const convertToDays = (milliseconds) => milliseconds / 1000 / 60 / 60 / 24;
+
+const extractYYYYMMDD = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+
+    let monthStr, dayStr;
+
+    // 0 padding
+    if (month + 1 < 10) {
+        monthStr = `0${month + 1}`;
+    } else {
+        monthStr = `${month + 1}`;
+    }
+    if (day < 10) {
+        dayStr = `0${day}`;
+    } else {
+        dayStr = `${day}`;
+    }
+
+    return `${year}-${monthStr}-${dayStr}`;
+}
+
 export default function Vocabulary() {
     const { id } = useParams();
 
@@ -24,6 +49,8 @@ export default function Vocabulary() {
         JSON.parse(localStorage.getItem(lang.id)) || lang.words
     );
 
+    const [dateValue, setDateValue] = useState('today');
+
     useEffect(() => {
         localStorage.setItem([lang.id], JSON.stringify(words));
     }, [lang, words]);
@@ -32,9 +59,29 @@ export default function Vocabulary() {
         setWords(words.map(word => word.id === activeWord.id ? { ...word, ...activeWord } : word))
     }, [activeWord]);
 
+    let filteredWords;
+
+    useEffect(() => {
+        filteredWords = getFilteredWords(dateValue);
+        console.log(filteredWords);
+        
+    }, []);
+
     const [isDetailOpen, setIsDetailOpen] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const getFilteredWords = (value) => {
+        const today = new Date();
+        switch(value) {
+            case 'today':
+                return words.filter(word => word.date = extractYYYYMMDD(today));
+            case 'thisWeek':
+                return words.filter(word => convertToDays(today - new Date(word.date)) <= 7);
+            default:
+                return words;
+        }
+    }
 
     const handleOnClick = (e) => {
         const word = words.find(word => word.id.toString() === e.target.name);
@@ -77,6 +124,10 @@ export default function Vocabulary() {
         setWords(words.filter(w => w.id !== word.id));
     }
 
+    const handleOnDateSelectChange = (e) => {
+        setDateValue(e.target.value);
+    }
+
     return (
         <>
             {/* modal */}
@@ -84,7 +135,12 @@ export default function Vocabulary() {
             <Header lang={lang} /> 
             <div className="row container position-relative">
                 {/* sidebar */ }
-                <Sidebar words={words} onClick={handleOnClick} onClickAddVocab={handleOnClickAddVocab} />
+                <Sidebar 
+                    words={filteredWords} 
+                    onClick={handleOnClick} 
+                    onClickAddVocab={handleOnClickAddVocab} dateValue={dateValue}
+                    onDateSelectChange={handleOnDateSelectChange} 
+                />
                 {/* detail */ }
                 { isDetailOpen && (
                     <Detail meta={meta} lang={lang} activeWord={ activeWord } handleOnDelete={handleOnDelete}>

@@ -13,6 +13,7 @@ export const data = {
             words: [
                 {
                     id: 0,
+                    date: "2021-03-06",
                     title: '幸せ',
                     pronounce: 'しあわせ',
                     definitions: [
@@ -38,6 +39,7 @@ export const data = {
                 },
                 {
                     id: 1,
+                    date: "2021-03-02",
                     title: '成功する',
                     pronounce: 'せいこうする',
                     definitions: [
