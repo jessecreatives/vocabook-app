@@ -1,6 +1,7 @@
 export const data = [
     {
         id: 0,
+        tag: "red",
         date: "2021-02-19",
         title: "幸せ",
         pronounce: "しあわせ",
@@ -27,6 +28,7 @@ export const data = [
     },
     {
         id: 1,
+        tag: "purple",
         date: "2021-03-10",
         title: "妨げる",
         pronounce: "さまたげる",
