@@ -26,7 +26,7 @@ export const data = [
         ]
     },
     {
-        id: 0,
+        id: 1,
         date: "2021-03-10",
         title: "妨げる",
         pronounce: "さまたげる",

@@ -7,6 +7,7 @@ export default function Detail({vocab}) {
         <Paper>
             {/* date */}
             <Typography variant="body1">{vocab.date}</Typography>
+            {/* title and pronounce */}
         </Paper>
     )
 }

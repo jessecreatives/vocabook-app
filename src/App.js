@@ -1,47 +1,44 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import {ThemeProvider, createMuiTheme, makeStyles} from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import {ThemeProvider} from '@material-ui/core/styles';
 import Sidebar from './components/Sidebar';
 import './App.css';
 import {data} from './data';
-
-const customTheme = createMuiTheme({
-  palette: {
-    primary: {
-      ligit: "#b4dfe5",
-      main: "#5667ac",
-      dark: "#303c6c"
-    },
-    secondary: {
-      light: "#fbe8a6", //yellow
-      main: "#f4976c" //orange
-    },
-    white: "#fff",
-    danger: "#F76C6C" //red
-  },
-});
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    background: theme.palette.primary.light,
-  },
-  gridContainer: {
-    background: theme.palette.white,
-  }
-}));
+import Detail from './components/Detail';
+import {theme} from './styles/Theme';
 
 const App = () => {
-  const classes = useStyles()
-
-  return (
-    <ThemeProvider theme={customTheme}>
-      <Container maxWidth="lg" className={classes.root}>
-        <Grid container className={classes.root}>
-            <Grid item xs={12} lg={4}>
-              <Sidebar data={data} />
-            </Grid>
+  const [vocabs, setVocabs] = useState(data);
+  console.log(vocabs);
+  
+  const [vocab, setVocab] = useState({
+    id: '',
+    date: '',
+    title: '',
+    pronounce: '',
+    definitions: [],
+    examples: []
+  });
+  const handleOnClick = (e) => {
+    // find the vocab from vocabs
+    const targetVocab = vocabs.find(vocab => vocab.id.toString() === e.target.id);
+    console.log(targetVocab);
     
+    const {id, date, title, pronounce, definitions, examples} = targetVocab;
+    setVocab({id, date, title, pronounce, definitions, examples});
+  }
+  return (
+    <ThemeProvider theme={theme}>
+      <Container maxWidth="lg">
+        <Grid container>
+            <Grid item xs={12} lg={4}>
+              <Sidebar vocabs={vocabs} onClick={handleOnClick} />
+            </Grid>
+            <Grid item xs={12} lg={8}>
+              <Detail vocab={vocab} />
+            </Grid>
         </Grid>
       </Container>
     </ThemeProvider>
