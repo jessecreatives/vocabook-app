@@ -18,21 +18,33 @@ export const theme = createMuiTheme({
     },
     typography: {
       fontFamily: "'M PLUS 1p', sans-serif",
+      h2: {
+        fontSize: "2rem",
+        fontWeight: "700",
+      }
     },
     shape: {
       borderRadius: 30
     },
     overrides: {
-      MuiTextField: {
-        root: {}
-      },
-      MuiButton: {
+      MuiAppBar: {
         root: {
-          textTransform: "none",
-          padding: "20px"
-        },
-        fullWidth: {
-          maxWidth: "300px"
+          boxShadow: "none",
+        }
+      },
+      MuiToolbar: {
+        root: {
+          justifyContent: "space-between",
+        }
+      },
+      MuiIconButton: {
+        root: {
+          padding: "1rem",
+        }
+      },
+      MuiSvgIcon: {
+        root: {
+          fontSize: "2.5rem",
         }
       }
     },

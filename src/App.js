@@ -1,6 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import AppBar from '@material-ui/core/AppBar';
+import Typography from '@material-ui/core/Typography';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {ThemeProvider} from '@material-ui/core/styles';
 import Sidebar from './components/Sidebar';
@@ -31,6 +37,17 @@ const App = () => {
   }
   return (
     <ThemeProvider theme={theme}>
+    <AppBar position="static" color="transparent">
+      <Toolbar>
+        <IconButton>
+          <ChevronLeftIcon/>
+        </IconButton>
+        <Typography variant="h2">日本語</Typography>
+        <IconButton>
+          <SettingsOutlinedIcon/>
+        </IconButton>
+      </Toolbar>
+      </AppBar>
       <Container maxWidth="lg">
         <Grid container>
             <Grid item xs={12} lg={4}>
