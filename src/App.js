@@ -8,16 +8,24 @@ import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import {ThemeProvider} from '@material-ui/core/styles';
+import {ThemeProvider, makeStyles} from '@material-ui/core/styles';
 import Sidebar from './components/Sidebar';
 import './App.css';
 import {data} from './data';
 import Detail from './components/Detail';
 import {theme} from './styles/Theme';
+import NewVocabModal from './components/NewVocabModal';
+
+const useStyles = makeStyles({
+  root: {
+    position: "relative",
+  }
+});
 
 const App = () => {
   const [vocabs, setVocabs] = useState(data);
-  console.log(vocabs);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isNewVocabModalOpen, setIsNewVocabModalOpen] = useState(false);
   
   const [vocab, setVocab] = useState({
     id: '',
@@ -27,37 +35,60 @@ const App = () => {
     definitions: [],
     examples: []
   });
+
   const handleOnClick = (e) => {
     // find the vocab from vocabs
     const targetVocab = vocabs.find(vocab => vocab.id.toString() === e.target.id);
-    console.log(targetVocab);
     
     const {id, date, title, pronounce, definitions, examples} = targetVocab;
     setVocab({id, date, title, pronounce, definitions, examples});
+    // open detail
+    setIsDetailOpen(true);
   }
+
+  const handleOnClickCloseDetail = (e) => {
+    e.preventDefault();
+    setIsDetailOpen(false);
+  }
+
+  const handleOnAddVocab = (e) => {
+    e.preventDefault();
+    setIsNewVocabModalOpen(true);
+  }
+
+  const handleOnNewVocabModalClose = (e) => {
+    e.preventDefault();
+    setIsNewVocabModalOpen(false);
+  }
+
+  const classes = useStyles();
+
   return (
     <ThemeProvider theme={theme}>
-    <AppBar position="static" color="transparent">
-      <Toolbar>
-        <IconButton>
-          <ChevronLeftIcon/>
-        </IconButton>
-        <Typography variant="h2">日本語</Typography>
-        <IconButton>
-          <SettingsOutlinedIcon/>
-        </IconButton>
-      </Toolbar>
-      </AppBar>
-      <Container maxWidth="lg">
-        <Grid container>
-            <Grid item xs={12} lg={4}>
-              <Sidebar vocabs={vocabs} onClick={handleOnClick} />
-            </Grid>
-            <Grid item xs={12} lg={8}>
-              <Detail vocab={vocab} />
-            </Grid>
-        </Grid>
-      </Container>
+      {isNewVocabModalOpen && <NewVocabModal isOpen={isNewVocabModalOpen} onClose={handleOnNewVocabModalClose} />}
+      <div className={classes.root}>
+        <AppBar position="static" color="transparent">
+          <Toolbar>
+            <IconButton>
+              <ChevronLeftIcon/>
+            </IconButton>
+            <Typography variant="h2">日本語</Typography>
+            <IconButton>
+              <SettingsOutlinedIcon/>
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Container maxWidth="lg">
+          <Grid container>
+              <Grid item xs={12} lg={4}>
+                <Sidebar vocabs={vocabs} onClick={handleOnClick} onAddVocab={handleOnAddVocab} />
+              </Grid>
+              <Grid item xs={12} lg={8}>
+                <Detail vocab={vocab} onClickCloseDetail={handleOnClickCloseDetail} isOpen={isDetailOpen} />
+              </Grid>
+          </Grid>
+        </Container>
+      </div>
     </ThemeProvider>
   );
 };

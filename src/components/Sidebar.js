@@ -5,7 +5,9 @@ import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import {makeStyles} from '@material-ui/core/styles';
+import {theme} from '../styles/Theme';
 
 const SwitchTag = props => {
     switch(props.color) {
@@ -16,15 +18,30 @@ const SwitchTag = props => {
     }
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
     dot: {
         width: "1rem",
         height: "1rem",
         marginRight: "1.5rem",
         background: (props) => SwitchTag(props),
         borderRadius: "10rem",
+    },
+    addButton: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "6.1rem",
+        padding: 0,
+        border: "0.3rem dotted #b4dfe5",
+        color: theme.palette.primary.light,
+    },
+    addIcon: {
+        width: "5rem",
+        height: "5rem",
+        verticalAlign: "middle"
     }
-});
+}));
 
 const TagWrapper = (props) => {
     const {color, ...other} = props;
@@ -32,7 +49,9 @@ const TagWrapper = (props) => {
     return <Box className={classes.dot} {...other} />;
 }
 
-export default function Sidebar({vocabs, onClick}) {
+export default function Sidebar({vocabs, onClick, onAddVocab}) {
+    const classes = useStyles();
+
     return (
         <Paper>
             <List>
@@ -45,7 +64,10 @@ export default function Sidebar({vocabs, onClick}) {
                         <ChevronRightIcon/>
                     </ListItem>
                 ))}
-            </List> 
+                <ListItem button onClick={onAddVocab} className={classes.addButton}>
+                    <Box><AddCircleIcon className={classes.addIcon} /></Box>
+                </ListItem>
+            </List>
         </Paper>
     )
 }

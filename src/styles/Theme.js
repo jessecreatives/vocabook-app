@@ -37,6 +37,9 @@ export const theme = createMuiTheme({
       MuiPaper: {
         root: {
           padding: "4rem",
+        },
+        elevation12: {
+          boxShadow: "0px 0px 30px rgba(0, 0, 0, 0.15)",
         }
       },
       MuiList: {
@@ -48,6 +51,7 @@ export const theme = createMuiTheme({
         root: {
           boxShadow: "none",
           padding: "1rem 0",
+          zIndex: "-1",
         }
       },
       MuiToolbar: {
@@ -66,6 +70,10 @@ export const theme = createMuiTheme({
         }
       },
       MuiListItem: {
+        root: {
+          paddingTop: 0,
+          paddingBottom: 0,
+        },
         button: {
           width: "100%",
           padding: "1.5rem 2.5rem",
@@ -75,6 +83,15 @@ export const theme = createMuiTheme({
           borderRadius: 100,
           justifyContent: "space-between",
           marginBottom: "2rem",
+        }
+      },
+      MuiButton: {
+        root: {
+          fontSize: "1.5rem",
+          padding: "1rem 2.5rem",
+        },
+        contained: {
+          boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.2)",
         }
       }
     },
