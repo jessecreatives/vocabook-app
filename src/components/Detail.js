@@ -6,6 +6,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 import CloseIcon from '@material-ui/icons/Close';
 import {createMuiTheme, makeStyles} from '@material-ui/core/styles';
 import { Slide } from '@material-ui/core';
@@ -17,6 +18,7 @@ const useStyles = makeStyles({
         position: "fixed",
         paddingTop: "6rem",
         top: 0,
+        left: 0,
         borderRadius: 0,
         zIndex: "10000", // AppBar has z-index: 1100
     },
@@ -29,8 +31,13 @@ const useStyles = makeStyles({
 
 const theme = createMuiTheme();
 
-export default function Detail({vocab, onClickCloseDetail, isOpen}) {
+export default function Detail({vocab, onClickCloseDetail, onDelete, isOpen}) {
     const classes = useStyles();
+
+    const handleDelete = e => {
+        e.preventDefault();
+        onDelete(vocab.id);
+    }
 
     return (
         <Slide direction="left" in={isOpen} mountOnEnter unmountOnExit>
@@ -54,8 +61,8 @@ export default function Detail({vocab, onClickCloseDetail, isOpen}) {
                 <Box style={{marginBottom: theme.spacing(4)}}>
                     <Typography variant="h2">定義</Typography>
                     <List>
-                        {vocab.definitions.map(d => (
-                            <ListItem disableGutters key={d.id}>{d.id}. {d.value}</ListItem>
+                        {vocab.definitions.map((d, i) => (
+                            <ListItem disableGutters key={i}>{i+1}. {d.value}</ListItem>
                         ))}
                     </List>
                 </Box>
@@ -63,11 +70,15 @@ export default function Detail({vocab, onClickCloseDetail, isOpen}) {
                 <Box>
                     <Typography variant="h2">例文</Typography>
                     <List>
-                        {vocab.examples.map(example => (
-                            <ListItem disableGutters key={example.id}>{example.id}. {example.value}</ListItem>
+                        {vocab.examples.map((example, i) => (
+                            <ListItem disableGutters key={i}>{i+1}. {example.value}</ListItem>
                         ))}
                     </List>
                 </Box>
+                {/* delete button */}
+                <IconButton style={{color: "#f50057", position: "absolute", right: "4rem", bottom: "4rem"}} onClick={handleDelete}>
+                    <DeleteForeverOutlinedIcon/>
+                </IconButton>
             </Paper>
         </Slide>
     )

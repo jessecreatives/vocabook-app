@@ -49,7 +49,7 @@ const TagWrapper = (props) => {
     return <Box className={classes.dot} {...other} />;
 }
 
-export default function Sidebar({vocabs, onClick, onAddVocab}) {
+export default function Sidebar({vocabs, onClick, onOpenNewVocabModal}) {
     const classes = useStyles();
 
     return (
@@ -59,12 +59,12 @@ export default function Sidebar({vocabs, onClick, onAddVocab}) {
                     <ListItem button key={vocab.id} onClick={onClick} id={vocab.id}>
                         <Box display="flex" flexDirection="row" alignItems="center">
                             <TagWrapper color={vocab.tag}></TagWrapper>
-                            <Typography variant="">{vocab.title}</Typography>
+                            <Typography variant="h2">{vocab.title}</Typography>
                         </Box>
                         <ChevronRightIcon/>
                     </ListItem>
                 ))}
-                <ListItem button onClick={onAddVocab} className={classes.addButton}>
+                <ListItem button onClick={onOpenNewVocabModal} className={classes.addButton}>
                     <Box><AddCircleIcon className={classes.addIcon} /></Box>
                 </ListItem>
             </List>
