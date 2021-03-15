@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -15,6 +15,26 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import {makeStyles} from '@material-ui/core/styles';
 import {theme} from '../styles/Theme';
+
+const convertToString = (date) => {
+    const year = date.getFullYear(); 
+    const month = date.getMonth() + 1; 
+    const day = date.getDate(); 
+
+    const monthStr = month < 10 ? `0${month}` : `${month}`;
+    const dayStr = day < 10 ? `0${day}` : `${month}`;
+
+    return `${year}-${monthStr}-${dayStr}`;
+}
+
+const convertToDate = (dateStr) => {
+    return new Date(dateStr);
+}
+
+const isWithinRange = (date1, date2, threshold) => {
+    const delta = date2 > date1 ? (date2 - date1) / 1000 / 60 / 60 / 24 : (date1 - date2) / 1000 / 60 / 60 / 24;
+    return delta <= threshold;
+}
 
 const SwitchTag = props => {
     switch(props.color) {
@@ -56,8 +76,35 @@ const TagWrapper = (props) => {
     return <Box className={classes.dot} {...other} />;
 }
 
+const DATE_MAP = {
+    'all': () => true,
+    'today': vocab => vocab.date === convertToString(new Date()),
+    'thisWeek': vocab => isWithinRange(convertToDate(vocab.date), new Date(), 7),
+    'thisMonth': vocab => isWithinRange(convertToDate(vocab.date), new Date(), 30),
+    'thisYear': vocab => isWithinRange(convertToDate(vocab.date), new Date(), 365)
+};
+
+const TAG_MAP = {
+    'all': () => true,
+    'red': vocab => vocab.tag === 'red',
+    'purple': vocab => vocab.tag === 'purple',
+};
+
 export default function Sidebar({vocabs, onClick, onOpenNewVocabModal}) {
     const classes = useStyles();
+
+    const [filter, setFilter] = useState({
+        date: 'all',
+        tag: 'all'
+    });
+
+    const handleDateChange = (e) => {
+        setFilter({...filter, date: e.target.value});
+    }
+
+    const handleTagChange = (e) => {
+        setFilter({...filter, tag: e.target.value});
+    }
 
     return (
         <Paper>
@@ -66,25 +113,29 @@ export default function Sidebar({vocabs, onClick, onOpenNewVocabModal}) {
                 <FormControl style={{display: "block", width: "46%", minWidth: "120"}}>
                     <InputLabel id="demo-simple-select-label">日付でフィルタ</InputLabel>
                     <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select" style={{width: "100%"}}
+                        labelId="date-label"
+                        id="date" style={{width: "100%"}}
+                        value={filter.date}
+                        onChange={handleDateChange}
                     >
-                        <MenuItem value={10}>全て</MenuItem>
-                        <MenuItem value={20}>今日</MenuItem>
-                        <MenuItem value={30}>今週</MenuItem>
-                        <MenuItem value={10}>今月</MenuItem>
-                        <MenuItem value={20}>今年</MenuItem>
+                        <MenuItem id="date" value='all'>全て</MenuItem>
+                        <MenuItem id="date" value='today'>今日</MenuItem>
+                        <MenuItem id="date" value='thisWeek'>今週</MenuItem>
+                        <MenuItem id="date" value='thisMonth'>今月</MenuItem>
+                        <MenuItem id="date" value='thisYear'>今年</MenuItem>
                     </Select>
                 </FormControl>
                 <FormControl style={{display: "block", width: "46%"}}>
                     <InputLabel id="demo-simple-select-label">タグでフィルタ</InputLabel>
                     <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select" style={{width: "100%"}}
+                        labelId="tag-label"
+                        id="tag" style={{width: "100%"}}
+                        value={filter.tag}
+                        onChange={handleTagChange}
                     >
-                        <MenuItem value={10}>全て</MenuItem>
-                        <MenuItem value={20}>赤色</MenuItem>
-                        <MenuItem value={30}>紫色</MenuItem>
+                        <MenuItem value='all'>全て</MenuItem>
+                        <MenuItem value='red'>赤色</MenuItem>
+                        <MenuItem value='purple'>紫色</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
@@ -96,7 +147,7 @@ export default function Sidebar({vocabs, onClick, onOpenNewVocabModal}) {
                 labelPlacement="start"
             />
             <List>
-                {vocabs.map(vocab => (
+                {vocabs.filter(DATE_MAP[filter.date]).filter(TAG_MAP[filter.tag]).map(vocab => (
                     <ListItem button key={vocab.id} onClick={onClick} id={vocab.id}>
                         <Box display="flex" flexDirection="row" alignItems="center">
                             <TagWrapper color={vocab.tag}></TagWrapper>
