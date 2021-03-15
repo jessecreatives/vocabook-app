@@ -84,9 +84,8 @@ const App = () => {
   const addVocab = (newVocab) => {
     axios
       .post('https://vocabook-app.herokuapp.com/api/vocabularies/', newVocab)
-      .then(res => {
-        updateVocabs()
-        setNewVocabId(res.data.id.toString())
+      .then(res => { 
+        updateVocabs();
       })
       .catch(err => console.log(err))
   }

@@ -63,7 +63,9 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
         tag: 'red',
         date: formatDateString(new Date()),
         title: '',
-        pronounce: ''
+        pronounce: '',
+        definitions: [],
+        examples: []
     });
 
     const [definition, setDefinition] = useState({
@@ -93,7 +95,9 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const {id, tag, date, title, pronounce} = vocab;
+        const {id, tag, date, title, pronounce, definitions, examples} = vocab;
+
+        // separate vocab creation and definitions/examples creation
         const newVocab = {
             tag,
             date,
@@ -102,20 +106,27 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
         }
         
         onAddVocab(newVocab);
-        setIsNewVocabAdded(true);
+
+        // definitions
+        vocab.definitions.map(definition => onAddDefinition(definition))
+
+        // examples
+        vocab.examples.map(example => onAddExample(example))
     }
 
     const handleDefinitionSubmit = (e) => {
         e.preventDefault();
-        
-        onAddDefinition(definition);
+
+        // push definition to vocab's definitions
+        setVocab({...vocab, definitions: [...vocab.definitions, definition]});
         setDefinition({...definition, value: ''});
     }
 
     const handleExampleSubmit = (e) => {
         e.preventDefault();
         
-        onAddExample(example);
+        // push example to vocab's examples
+        setVocab({...vocab, examples: [...vocab.examples, example]});
         setExample({...example, value: ''});
     }
 
@@ -123,9 +134,21 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
         <Modal open={isOpen} className={classes.modal}>
             {isNewVocabAdded ? (
                 <Paper className={classes.paper}>
+                        {/* close button */}
                         <IconButton className={classes.close} onClick={onClose}>
                             <CloseIcon />
                         </IconButton>
+                        {/* display new vocab's title, pronounce, definitions and examples */}
+                        <Box>
+                            <Typography>{vocab.title}</Typography>
+                            <Typography>{vocab.pronounce}</Typography>
+                            {vocab.definitions.map((d, i) => (
+                                <Typography key={i}>{d.value}</Typography>
+                            ))}
+                            {vocab.examples.map((example, i) => (
+                                <Typography key={i}>{example.value}</Typography>
+                            ))}
+                        </Box>
                         <form onSubmit={handleDefinitionSubmit}>
                             <Typography variant="h2" align="center" style={{marginBottom: theme.spacing(4)}}>定義追加</Typography>
                             <Box marginBottom={3}>
@@ -146,17 +169,17 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
                             </Box>
                             <Button type="submit" fullWidth color="primary">追加</Button>
                         </form>
-                        <Box>
-                            <Button variant="contained" onClick={}>OK</Button>
-                            <Button variant="outlined">戻る</Button>
-                        </Box>
+                        <form onSubmit={handleSubmit} style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                            <Button type="submit" variant="contained" style={{width: "48%"}}>OK</Button>
+                            <Button variant="outlined" onClick={() => setIsNewVocabAdded(false)} style={{width: "48%"}}>戻る</Button>
+                        </form>
                     </Paper>
             ) : (
                 <Paper className={classes.paper}>
                     <IconButton className={classes.close} onClick={onClose}>
                         <CloseIcon />
                     </IconButton>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={() => setIsNewVocabAdded(true)}>
                         <Typography variant="h2" align="center" style={{marginBottom: theme.spacing(4)}}>新規単語追加</Typography>
                         <Box marginBottom={3}>
                             <FormControl fullWidth>
@@ -168,7 +191,7 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
                                 <Input id="pronounce" aria-describedby="new-vocab-pronounce" value={vocab.pronounce} onChange={handleChange}/>
                             </FormControl>
                         </Box>
-                        <Button type="submit" fullWidth color="primary">追加</Button>
+                        <Button type="submit" fullWidth color="primary">追加&定義・例文追加へ</Button>
                     </form>
                 </Paper>
             )}
