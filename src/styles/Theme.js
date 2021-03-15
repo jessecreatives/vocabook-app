@@ -28,7 +28,11 @@ export const theme = createMuiTheme({
       h2: {
         fontSize: "2rem",
         fontWeight: "700",
-      }
+      },
+      h5: {
+        fontSize: "1.5rem",
+        fontWeight: "700",
+      },
     },
     shape: {
       borderRadius: 30

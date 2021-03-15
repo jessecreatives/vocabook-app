@@ -86,6 +86,16 @@ const App = () => {
       .post('https://vocabook-app.herokuapp.com/api/vocabularies/', newVocab)
       .then(res => { 
         updateVocabs();
+        setNewVocabId(res.data.id);
+      })
+      .catch(err => console.log(err))
+  }
+
+  const patchVocab = (data) => {
+    axios
+      .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${newVocabId}`, data)
+      .then(res => { 
+        updateVocabs();
       })
       .catch(err => console.log(err))
   }
@@ -94,6 +104,8 @@ const App = () => {
     if (!newDef.vocabulary) {
       newDef.vocabulary = newVocabId; // pass in new vocab id
     }
+    console.log(newDef);
+    
     axios
       .post('https://vocabook-app.herokuapp.com/api/definitions/', newDef)
       .then(res => {
@@ -128,7 +140,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      {isNewVocabModalOpen && <NewVocabModal isOpen={isNewVocabModalOpen} onClose={closeModal} onAddVocab={addVocab} onAddDefinition={addDefinitioin} onAddExample={addExample} />}
+      {isNewVocabModalOpen && <NewVocabModal isOpen={isNewVocabModalOpen} onClose={closeModal} onAddVocab={addVocab} onAddDefinition={addDefinitioin} onAddExample={addExample} onPatchVocab={patchVocab} />}
       <div className={classes.root}>
         <AppBar position="static" color="transparent">
           <Toolbar>

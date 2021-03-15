@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinition, onAddExample}) {
+export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinition, onAddExample, onPatchVocab}) {
     const classes = useStyles();
 
     const [vocab, setVocab] = useState({
@@ -80,6 +80,8 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
 
     const [isNewVocabAdded, setIsNewVocabAdded] = useState(false);
 
+    const [isEditingVocab, setIsEditingVocab] = useState(false);
+
     const handleChange = (e) => {
         setVocab({...vocab, [e.target.id]: e.target.value});      
     }
@@ -95,7 +97,7 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const {id, tag, date, title, pronounce, definitions, examples} = vocab;
+        const {tag, date, title, pronounce} = vocab;
 
         // separate vocab creation and definitions/examples creation
         const newVocab = {
@@ -105,13 +107,23 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
             pronounce
         }
         
-        onAddVocab(newVocab);
+        if (isEditingVocab) {
+            handlePatch();
+        } else {
+            onAddVocab(newVocab);
+        }
+        setIsNewVocabAdded(true);
+    }
 
-        // definitions
-        vocab.definitions.map(definition => onAddDefinition(definition))
+    const handlePatch = () => {
+        const {title, pronounce} = vocab;
 
-        // examples
-        vocab.examples.map(example => onAddExample(example))
+        onPatchVocab({title, pronounce});
+    }
+
+    const handleBack = () => {
+        setIsNewVocabAdded(false);
+        setIsEditingVocab(true);
     }
 
     const handleDefinitionSubmit = (e) => {
@@ -119,6 +131,7 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
 
         // push definition to vocab's definitions
         setVocab({...vocab, definitions: [...vocab.definitions, definition]});
+        onAddDefinition(definition);
         setDefinition({...definition, value: ''});
     }
 
@@ -127,6 +140,7 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
         
         // push example to vocab's examples
         setVocab({...vocab, examples: [...vocab.examples, example]});
+        onAddExample(example);
         setExample({...example, value: ''});
     }
 
@@ -140,17 +154,29 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
                         </IconButton>
                         {/* display new vocab's title, pronounce, definitions and examples */}
                         <Box>
-                            <Typography>{vocab.title}</Typography>
-                            <Typography>{vocab.pronounce}</Typography>
-                            {vocab.definitions.map((d, i) => (
-                                <Typography key={i}>{d.value}</Typography>
-                            ))}
-                            {vocab.examples.map((example, i) => (
-                                <Typography key={i}>{example.value}</Typography>
-                            ))}
+                            <Box display="flex" flexDirection="row" alignItems="flex-end" marginBottom={4}>
+                                <Typography variant="h2" style={{marginRight: theme.spacing(2)}}>{vocab.title}</Typography>
+                                <Typography variant="body1">{vocab.pronounce}</Typography>
+                            </Box>
+                            <Box display="flex" flexDirection="row" alignItems="flex-start" marginBottom={2}>
+                                <Typography variant="h5" style={{marginRight: theme.spacing(2)}}>定義：</Typography>
+                                <Box display="flex" flexDirection="column">
+                                    {vocab.definitions.map((d, i) => (
+                                        <Typography key={i}>{d.value}</Typography>
+                                    ))}
+                                </Box>
+                            </Box>
+                            <Box display="flex" flexDirection="row" alignItems="flex-start" marginBottom={4}>
+                                <Typography variant="h5" style={{marginRight: theme.spacing(2)}}>例文：</Typography>
+                                <Box display="flex" flexDirection="column">
+                                    {vocab.examples.map((example, i) => (
+                                        <Typography key={i}>{example.value}</Typography>
+                                    ))}
+                                </Box>
+                            </Box>
                         </Box>
-                        <form onSubmit={handleDefinitionSubmit}>
-                            <Typography variant="h2" align="center" style={{marginBottom: theme.spacing(4)}}>定義追加</Typography>
+                        <form onSubmit={handleDefinitionSubmit} style={{marginBottom: theme.spacing(4)}}>
+                            <Typography variant="h2" align="center" style={{marginBottom: theme.spacing(2)}}>定義追加</Typography>
                             <Box marginBottom={3}>
                                 <FormControl fullWidth>
                                     <InputLabel htmlFor="title">定義</InputLabel>
@@ -159,8 +185,8 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
                             </Box>
                             <Button type="submit" fullWidth color="primary">追加</Button>
                         </form>
-                        <form onSubmit={handleExampleSubmit}>
-                            <Typography variant="h2" align="center" style={{marginBottom: theme.spacing(4)}}>例文追加</Typography>
+                        <form onSubmit={handleExampleSubmit} style={{marginBottom: theme.spacing(6)}}>
+                            <Typography variant="h2" align="center" style={{marginBottom: theme.spacing(2)}}>例文追加</Typography>
                             <Box marginBottom={3}>
                                 <FormControl fullWidth>
                                     <InputLabel htmlFor="title">例文</InputLabel>
@@ -169,9 +195,9 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
                             </Box>
                             <Button type="submit" fullWidth color="primary">追加</Button>
                         </form>
-                        <form onSubmit={handleSubmit} style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                        <form onSubmit={onClose} style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                             <Button type="submit" variant="contained" style={{width: "48%"}}>OK</Button>
-                            <Button variant="outlined" onClick={() => setIsNewVocabAdded(false)} style={{width: "48%"}}>戻る</Button>
+                            <Button variant="outlined" onClick={handleBack} style={{width: "48%", borderWidth: "0.2rem"}}>戻る</Button>
                         </form>
                     </Paper>
             ) : (
@@ -179,7 +205,7 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
                     <IconButton className={classes.close} onClick={onClose}>
                         <CloseIcon />
                     </IconButton>
-                    <form onSubmit={() => setIsNewVocabAdded(true)}>
+                    <form onSubmit={handleSubmit}>
                         <Typography variant="h2" align="center" style={{marginBottom: theme.spacing(4)}}>新規単語追加</Typography>
                         <Box marginBottom={3}>
                             <FormControl fullWidth>
