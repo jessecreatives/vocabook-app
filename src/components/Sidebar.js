@@ -4,6 +4,13 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import TextField from '@material-ui/core/TextField';
+import Switch from '@material-ui/core/Switch';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import {makeStyles} from '@material-ui/core/styles';
@@ -54,6 +61,40 @@ export default function Sidebar({vocabs, onClick, onOpenNewVocabModal}) {
 
     return (
         <Paper>
+            {/* filters */}
+            <Box display="flex" flexDirection="row" justifyContent="space-between">
+                <FormControl style={{display: "block", width: "46%", minWidth: "120"}}>
+                    <InputLabel id="demo-simple-select-label">日付でフィルタ</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select" style={{width: "100%"}}
+                    >
+                        <MenuItem value={10}>全て</MenuItem>
+                        <MenuItem value={20}>今日</MenuItem>
+                        <MenuItem value={30}>今週</MenuItem>
+                        <MenuItem value={10}>今月</MenuItem>
+                        <MenuItem value={20}>今年</MenuItem>
+                    </Select>
+                </FormControl>
+                <FormControl style={{display: "block", width: "46%"}}>
+                    <InputLabel id="demo-simple-select-label">タグでフィルタ</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select" style={{width: "100%"}}
+                    >
+                        <MenuItem value={10}>全て</MenuItem>
+                        <MenuItem value={20}>赤色</MenuItem>
+                        <MenuItem value={30}>紫色</MenuItem>
+                    </Select>
+                </FormControl>
+            </Box>
+            <TextField variant="outlined" label="Search..."></TextField>
+            <FormControlLabel
+                value="memoMode"
+                control={<Switch color="primary" />}
+                label="暗記モード"
+                labelPlacement="start"
+            />
             <List>
                 {vocabs.map(vocab => (
                     <ListItem button key={vocab.id} onClick={onClick} id={vocab.id}>
