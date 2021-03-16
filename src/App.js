@@ -91,9 +91,9 @@ const App = () => {
       .catch(err => console.log(err))
   }
 
-  const patchVocab = (data) => {
+  const patchVocab = (data, id=newVocabId) => {
     axios
-      .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${newVocabId}`, data)
+      .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${id}`, data)
       .then(res => { 
         updateVocabs();
       })
