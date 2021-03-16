@@ -46,6 +46,19 @@ export const theme = createMuiTheme({
           boxShadow: "0px 0px 30px rgba(0, 0, 0, 0.15)",
         }
       },
+      MuiOutlinedInput: {
+        root: {
+          borderRadius: 5,
+        },
+        input: {
+          padding: "12px 14px",
+        },
+      },
+      MuiSwitch: {
+        root: {
+          
+        }
+      },
       MuiList: {
         root: {
           padding: 0,
@@ -66,6 +79,23 @@ export const theme = createMuiTheme({
       MuiIconButton: {
         root: {
           padding: "1rem",
+        }
+      },
+      MuiMenu: {
+        paper: {
+          borderRadius: 5,
+          padding: 0,
+        },
+        list: {
+          padding: 0,
+        }
+      },
+      MuiMenuItem: {
+        root: {
+          border: "none",
+          borderRadius: 0,
+          color: "#303c6c",
+          margin: 0,
         }
       },
       MuiSvgIcon: {

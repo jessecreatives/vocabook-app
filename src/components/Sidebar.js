@@ -11,8 +11,12 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import Switch from '@material-ui/core/Switch';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import SearchIcon from '@material-ui/icons/Search';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import SortIcon from '@material-ui/icons/Sort';
 import {makeStyles} from '@material-ui/core/styles';
 import {theme} from '../styles/Theme';
 
@@ -90,6 +94,23 @@ const TAG_MAP = {
     'purple': vocab => vocab.tag === 'purple',
 };
 
+const COLOR_MAP = {
+    'all': theme.palette.primary.main,
+    'red': '#f50057',
+    'purple': '#d500f9',
+}
+
+const CustomMenuItem = props => {
+    const {label, ...other} = props;
+    const classes = useStyles(props);
+    
+    return (
+        <MenuItem 
+          className={classes.menuItem}
+        >{label}</MenuItem>
+    )
+}
+
 export default function Sidebar({vocabs, onClick, onOpenNewVocabModal}) {
     const classes = useStyles();
 
@@ -97,6 +118,16 @@ export default function Sidebar({vocabs, onClick, onOpenNewVocabModal}) {
         date: 'all',
         tag: 'all'
     });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [search, setSearch] = useState('');
+
+    const handleSearchTermChange = e => {
+        setSearchTerm(e.target.value);
+    }
+
+    const handleSetSearch = e => {
+        setSearch(searchTerm);
+    }
 
     const handleDateChange = (e) => {
         setFilter({...filter, date: e.target.value});
@@ -109,7 +140,7 @@ export default function Sidebar({vocabs, onClick, onOpenNewVocabModal}) {
     return (
         <Paper>
             {/* filters */}
-            <Box display="flex" flexDirection="row" justifyContent="space-between">
+            <Box display="flex" flexDirection="row" justifyContent="space-between" marginBottom={4}>
                 <FormControl style={{display: "block", width: "46%", minWidth: "120"}}>
                     <InputLabel id="demo-simple-select-label">日付でフィルタ</InputLabel>
                     <Select
@@ -133,21 +164,46 @@ export default function Sidebar({vocabs, onClick, onOpenNewVocabModal}) {
                         value={filter.tag}
                         onChange={handleTagChange}
                     >
-                        <MenuItem value='all'>全て</MenuItem>
-                        <MenuItem value='red'>赤色</MenuItem>
-                        <MenuItem value='purple'>紫色</MenuItem>
+                        <MenuItem value='all' style={{color: theme.palette.primary.main}}>全て</MenuItem>
+                        <MenuItem value='red' style={{color: "#f50057"}}>赤色</MenuItem>
+                        <MenuItem value='purple' style={{color: "#d500f9"}}>紫色</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
-            <TextField variant="outlined" label="Search..."></TextField>
-            <FormControlLabel
-                value="memoMode"
-                control={<Switch color="primary" />}
-                label="暗記モード"
-                labelPlacement="start"
-            />
+            <Box position="relative">
+                <TextField 
+                  fullWidth
+                  id="search"
+                  type="text"
+                  placeholder="検索..."
+                  variant="outlined"
+                  value={searchTerm}
+                  onChange={handleSearchTermChange}
+                  style={{marginBottom: theme.spacing(3)}}
+                />
+                <IconButton onClick={handleSetSearch} style={{position: "absolute", right: "5px"}}>
+                    <SearchIcon/> 
+                </IconButton>
+            </Box>
+            <Box display="flex" flexDirection="row" justifyContent="space-between" marginBottom={0}>
+                <FormControlLabel
+                    value="memoMode"
+                    control={<Switch color="primary" />}
+                    label="暗記モード"
+                    labelPlacement="start" 
+                    style={{margin: 0}}
+                />
+                <Box>
+                    <Button variant="text" color="primary" className={classes.button} endIcon={<SortIcon />} style={{marginRight: theme.spacing(1)}}>追加日</Button>
+                    <Button variant="text" color="primary" className={classes.button} endIcon={<SortIcon />}>タグ</Button>
+                </Box>
+            </Box>
             <List>
-                {vocabs.filter(DATE_MAP[filter.date]).filter(TAG_MAP[filter.tag]).map(vocab => (
+                {vocabs
+                    .filter(DATE_MAP[filter.date])
+                    .filter(TAG_MAP[filter.tag])
+                    .filter(vocab => vocab.title.toLowerCase().includes(search.toLowerCase()))
+                    .map(vocab => (
                     <ListItem button key={vocab.id} onClick={onClick} id={vocab.id}>
                         <Box display="flex" flexDirection="row" alignItems="center">
                             <TagWrapper color={vocab.tag}></TagWrapper>
