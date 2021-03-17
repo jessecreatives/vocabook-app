@@ -101,12 +101,31 @@ const App = () => {
   }
 
   const patchVocab = (vocab) => {
+    // for basic part
     axios
       .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${vocab.id}`, {date: vocab.date, title: vocab.title, pronounce: vocab.pronounce})
       .then(res => { 
         updateVocabs();
       })
       .catch(err => console.log(err))
+    // for definitions
+    vocab.definitions.map(d => 
+      axios
+        .patch(`https://vocabook-app.herokuapp.com/api/definitions/${d.id}`, {value: d.value})
+        .then(res => { 
+          updateVocabs();
+        })
+        .catch(err => console.log(err))
+    )
+    // for examples
+    vocab.examples.map(example => 
+      axios
+        .patch(`https://vocabook-app.herokuapp.com/api/examples/${example.id}`, {value: example.value})
+        .then(res => { 
+          updateVocabs();
+        })
+        .catch(err => console.log(err))
+    )
   }
 
   const addDefinitioin = (newDef) => {
@@ -201,7 +220,7 @@ const App = () => {
                               <Typography variant="h2">定義</Typography>
                               <List>
                                   {vocab.definitions.map((d, i) => (
-                                      <ListItem disableGutters key={i}>{i+1}. {d.value}</ListItem>
+                                      <ListItem disableGutters key={i}>{i+1}. <TextField variant="outlined" value={vocab.definitions[i].value} onChange={(e) => setVocab({...vocab, definitions: vocab.definitions.map(d => vocab.definitions.indexOf(d) === i ? {...d, value: e.target.value} : d)})} /></ListItem>
                                   ))}
                               </List>
                           </Box>
@@ -210,7 +229,7 @@ const App = () => {
                               <Typography variant="h2">例文</Typography>
                               <List>
                                   {vocab.examples.map((example, i) => (
-                                      <ListItem disableGutters key={i}>{i+1}. {example.value}</ListItem>
+                                    <ListItem disableGutters key={i}>{i+1}. <TextField variant="outlined" value={vocab.examples[i].value} onChange={(e) => setVocab({...vocab, examples: vocab.examples.map(example => vocab.examples.indexOf(example) === i ? {...example, value: e.target.value} : example)})} /></ListItem>
                                   ))}
                               </List>
                           </Box>
