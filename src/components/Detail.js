@@ -10,7 +10,6 @@ import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined'
 import CloseIcon from '@material-ui/icons/Close';
 import {createMuiTheme, makeStyles} from '@material-ui/core/styles';
 import { Slide } from '@material-ui/core';
-import {VocabContext} from '../contexts/Contexts';
 
 const useStyles = makeStyles({
     root: {

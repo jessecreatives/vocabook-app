@@ -131,7 +131,7 @@ export default function NewVocabModal({isOpen, onClose, onAddVocab, onAddDefinit
 
         // push definition to vocab's definitions
         setVocab({...vocab, definitions: [...vocab.definitions, definition]});
-        onAddDefinition(definition);
+        onAddDefinition(definition, true);
         setDefinition({...definition, value: ''});
     }
 

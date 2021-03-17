@@ -63,6 +63,11 @@ const App = () => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isNewVocabModalOpen, setIsNewVocabModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+
+  const [inputs, setInputs] = useState({
+    definition: '',
+    example: ''
+  });
   
   const [vocab, setVocab] = useState({
     id: '',
@@ -73,7 +78,26 @@ const App = () => {
     examples: []
   });
 
-  const [newVocabId, setNewVocabId] = useState(null);
+  const [newVocabId, setNewVocabId] = useState(null)
+  const [isInputOpen, setIsInputOpen] = useState(false)
+
+  const openInput = () => {
+    setIsInputOpen(true)
+  }
+
+  const closeInput = () => {
+    setIsInputOpen(false)
+  }
+
+  const handleOnInputChange = (e) => {
+    setInputs({...inputs, [e.target.name]: e.target.value})
+  }
+
+  const handleOnAddDefinition = () => {
+    const newDef = {value: inputs.definition, vocabulary: vocab.id}
+    addDefinition(newDef)
+    setIsInputOpen(false)
+  }
 
   const updateVocabs = () => {
     axios
@@ -127,7 +151,7 @@ const App = () => {
       .catch(err => console.log(err))
   }
 
-  const patchVocab = (vocab) => {
+  const patchVocab = (vocab, patchDefs=false, patchExamples=false) => {
     // for basic part
     axios
       .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${vocab.id}`, {date: vocab.date, title: vocab.title, pronounce: vocab.pronounce})
@@ -136,30 +160,33 @@ const App = () => {
       })
       .catch(err => console.log(err))
     // for definitions
-    vocab.definitions.map(d => 
-      axios
-        .patch(`https://vocabook-app.herokuapp.com/api/definitions/${d.id}`, {value: d.value})
-        .then(res => { 
-          updateVocabs();
-        })
-        .catch(err => console.log(err))
-    )
+    if (patchDefs) {
+      vocab.definitions.map(d => 
+        axios
+          .patch(`https://vocabook-app.herokuapp.com/api/definitions/${d.id}`, {value: d.value})
+          .then(res => { 
+            updateVocabs();
+          })
+          .catch(err => console.log(err))
+      )
+    }
     // for examples
-    vocab.examples.map(example => 
-      axios
-        .patch(`https://vocabook-app.herokuapp.com/api/examples/${example.id}`, {value: example.value})
-        .then(res => { 
-          updateVocabs();
-        })
-        .catch(err => console.log(err))
-    )
+    if (patchExamples) {
+      vocab.examples.map(example => 
+        axios
+          .patch(`https://vocabook-app.herokuapp.com/api/examples/${example.id}`, {value: example.value})
+          .then(res => { 
+            updateVocabs();
+          })
+          .catch(err => console.log(err))
+      )
+    }
   }
 
-  const addDefinitioin = (newDef) => {
-    if (!newDef.vocabulary) {
-      newDef.vocabulary = newVocabId; // pass in new vocab id
-    }
-    
+  const addDefinition = (newDef, addVocabId=false) => {   
+    if (addVocabId) {
+      newDef.vocabulary = newVocabId
+    } 
     axios
       .post('https://vocabook-app.herokuapp.com/api/definitions/', newDef)
       .then(res => {
@@ -194,8 +221,12 @@ const App = () => {
     setIsEditing(true)
   }
 
+  const cancel = () => {
+    setIsEditing(false)
+  }
+
   const submit = () => {
-    patchVocab(vocab)
+    patchVocab(vocab, true, true)
     setIsEditing(false)
   }
 
@@ -203,7 +234,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      {isNewVocabModalOpen && <NewVocabModal isOpen={isNewVocabModalOpen} onClose={closeModal} onAddVocab={addVocab} onAddDefinition={addDefinitioin} onAddExample={addExample} onPatchVocab={patchVocab} />}
+      {isNewVocabModalOpen && <NewVocabModal isOpen={isNewVocabModalOpen} onClose={closeModal} onAddVocab={addVocab} onAddDefinition={addDefinition} onAddExample={addExample} onPatchVocab={patchVocab} />}
       <div className={classes.root}>
         <AppBar position="static" color="transparent">
           <Toolbar>
@@ -234,29 +265,32 @@ const App = () => {
                           {/* date and edit button */}
                           <Box display="flex" flexDirection="row"  justifyContent="space-between" alignItems="center" style={{marginBottom: theme.spacing(4)}}>
                               <TextField variant="outlined" value={vocab.date} onChange={(e) => setVocab({...vocab, date: e.target.value})} />
-                              <Button variant="outlined" color="primary" onClick={submit}>保存</Button>
+                              <Box display="flex" flexDirection="row" >
+                                <Button variant="contained" color="primary" onClick={submit} style={{marginRight: theme.spacing(1)}}>保存</Button>
+                                <Button variant="outlined" color="primary" onClick={cancel} style={{borderWidth: "0.2rem"}}>キャンセル</Button>
+                              </Box>
                           </Box>
 
                           {/* title and pronounce */}
-                          <Box display="flex" flexDirection="row" alignItems="flex-end" style={{marginBottom: theme.spacing(6)}}>
-                            <TextField variant="outlined" value={vocab.title} onChange={(e) => setVocab({...vocab, title: e.target.value})} />
+                          <Box display="flex" flexDirection="row" alignItems="flex-end" style={{marginBottom: theme.spacing(3), borderBottom: "0.1rem solid rgba(0, 0, 0, 0.12)", paddingBottom: theme.spacing(3)}}>
+                            <TextField style={{marginRight: theme.spacing(3)}} variant="outlined" value={vocab.title} onChange={(e) => setVocab({...vocab, title: e.target.value})} />
                             <TextField variant="outlined" value={vocab.pronounce} onChange={(e) => setVocab({...vocab, pronounce: e.target.value})} />
                           </Box>
                           {/* definitions */}
-                          <Box style={{marginBottom: theme.spacing(4)}}>
-                              <Typography variant="h2">定義</Typography>
+                          <Box style={{marginBottom: theme.spacing(3), borderBottom: "0.1rem solid rgba(0, 0, 0, 0.12)", paddingBottom: theme.spacing(3)}}>
+                              <Typography variant="h2" style={{marginBottom: theme.spacing(1)}}>定義</Typography>
                               <List>
                                   {vocab.definitions.map((d, i) => (
-                                      <ListItem disableGutters key={i}>{i+1}. <TextField variant="outlined" value={vocab.definitions[i].value} onChange={(e) => setVocab({...vocab, definitions: vocab.definitions.map(d => vocab.definitions.indexOf(d) === i ? {...d, value: e.target.value} : d)})} /></ListItem>
+                                      <ListItem disableGutters key={i}>{i+1}.<TextField fullWidth variant="outlined" value={vocab.definitions[i].value} onChange={(e) => setVocab({...vocab, definitions: vocab.definitions.map(d => vocab.definitions.indexOf(d) === i ? {...d, value: e.target.value} : d)})} style={{marginLeft: theme.spacing(1), marginBottom: theme.spacing(2)}}/></ListItem>
                                   ))}
                               </List>
                           </Box>
                           {/* examples */}
-                          <Box>
-                              <Typography variant="h2">例文</Typography>
+                          <Box style={{marginBottom: theme.spacing(3), borderBottom: "0.1rem solid rgba(0, 0, 0, 0.12)", paddingBottom: theme.spacing(3)}}>
+                              <Typography variant="h2" style={{marginBottom: theme.spacing(1)}}>例文</Typography>
                               <List>
                                   {vocab.examples.map((example, i) => (
-                                    <ListItem disableGutters key={i}>{i+1}. <TextField variant="outlined" value={vocab.examples[i].value} onChange={(e) => setVocab({...vocab, examples: vocab.examples.map(example => vocab.examples.indexOf(example) === i ? {...example, value: e.target.value} : example)})} /></ListItem>
+                                    <ListItem disableGutters key={i}>{i+1}.<TextField fullWidth variant="outlined" value={vocab.examples[i].value} onChange={(e) => setVocab({...vocab, examples: vocab.examples.map(example => vocab.examples.indexOf(example) === i ? {...example, value: e.target.value} : example)})} style={{marginLeft: theme.spacing(1), marginBottom: theme.spacing(2)}} /></ListItem>
                                   ))}
                               </List>
                           </Box>
@@ -278,22 +312,31 @@ const App = () => {
                               </IconButton>
                           </Box>
                           {/* title and pronounce */}
-                          <Box display="flex" flexDirection="row" alignItems="flex-end" style={{marginBottom: theme.spacing(6)}}>
+                          <Box display="flex" flexDirection="row" alignItems="flex-end" style={{marginBottom: theme.spacing(3), borderBottom: "0.1rem solid rgba(0, 0, 0, 0.12)", paddingBottom: theme.spacing(3)}}>
                               <Typography variant="h1" style={{marginRight: theme.spacing(3)}}>{vocab.title}</Typography>
                               <Typography>{vocab.pronounce}</Typography>
                           </Box>
                           {/* definitions */}
-                          <Box style={{marginBottom: theme.spacing(4)}}>
-                              <Typography variant="h2">定義</Typography>
+                          <Box style={{marginBottom: theme.spacing(4), borderBottom: "0.1rem solid rgba(0, 0, 0, 0.12)", paddingBottom: theme.spacing(3)}}>
+                              <Typography variant="h2" style={{marginBottom: theme.spacing(2)}}>定義</Typography>
                               <List>
-                                  {vocab.definitions.map((d, i) => (
-                                      <ListItem disableGutters key={i}>{i+1}. {d.value}</ListItem>
-                                  ))}
+                                  {vocab.definitions.filter(d => d.value !== '').map((d, i) => <ListItem disableGutters key={i} style={{marginBottom: theme.spacing(2)}}>{i+1}. {d.value}</ListItem>)}
+                                  {isInputOpen ? (
+                                    <>
+                                      <TextField variant='outlined' name='definition' value={inputs.definition} onChange={handleOnInputChange} />
+                                      <Box display="flex" flexDirection="row" justifyContent="space-between">
+                                        <Button variant="contained" color="primary" style={{width: "48%", minWidth: 0, marginTop: theme.spacing(2)}} onClick={handleOnAddDefinition}>追加</Button>
+                                        <Button variant="outlined" color="primary" style={{width: "48%", minWidth: 0, marginTop: theme.spacing(2)}} onClick={closeInput}>キャンセル</Button>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <Button variant="text" color="secondary" style={{padding: 0, minWidth: 0}} onClick={openInput}>+ 定義</Button>
+                                  )}
                               </List>
                           </Box>
                           {/* examples */}
-                          <Box>
-                              <Typography variant="h2">例文</Typography>
+                          <Box style={{marginBottom: theme.spacing(4), borderBottom: "0.1rem solid rgba(0, 0, 0, 0.12)", paddingBottom: theme.spacing(3)}}>
+                              <Typography variant="h2" style={{marginBottom: theme.spacing(2)}}>例文</Typography>
                               <List>
                                   {vocab.examples.map((example, i) => (
                                       <ListItem disableGutters key={i}>{i+1}. {example.value}</ListItem>
