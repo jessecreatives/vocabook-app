@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, {useState, useEffect} from 'react';
+=======
+import React, {useState, useContext} from 'react';
+>>>>>>> dev
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -11,6 +15,7 @@ import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined'
 import CloseIcon from '@material-ui/icons/Close';
 import {createMuiTheme, makeStyles} from '@material-ui/core/styles';
 import { Slide } from '@material-ui/core';
+import {VocabContext} from '../contexts/Contexts';
 
 const useStyles = makeStyles({
     root: {
@@ -35,6 +40,7 @@ const theme = createMuiTheme();
 export default function Detail({vocab, onClickCloseDetail, onDelete, onPatchVocab, onDefChange, onExampleChange, isOpen}) {
     const classes = useStyles();
 
+<<<<<<< HEAD
     const [isEditing, setIsEditing] = useState(false);
 
     const handleOnClickEdit = (e) => {
@@ -70,6 +76,12 @@ export default function Detail({vocab, onClickCloseDetail, onDelete, onPatchVoca
         onPatchVocab(data, vocab.id);
     }
 
+=======
+    const [input, setInput] = useState(vocab);
+    console.log(input);
+    
+    
+>>>>>>> dev
     const handleDelete = e => {
         e.preventDefault();
         onDelete(vocab.id);
@@ -157,12 +169,14 @@ export default function Detail({vocab, onClickCloseDetail, onDelete, onPatchVoca
 
     return (
         <Slide direction="left" in={isOpen} mountOnEnter unmountOnExit>
-            <Paper className={classes.root}>
+            {vocab ? (
+                <Paper className={classes.root}>
                 <IconButton className={classes.close} onClick={onClickCloseDetail}>
                     <CloseIcon/>
                 </IconButton>
                 {isEditing ? editTemplate : viewTemplate}
             </Paper>
+            ) : null}
         </Slide>
     )
 }
