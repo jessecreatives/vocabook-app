@@ -28,6 +28,33 @@ import NewVocabModal from './components/NewVocabModal';
 const useStyles = makeStyles({
   root: {
     position: "relative",
+  },
+  gridContainer: {
+    position: "relative",
+  },
+  slide: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    minHeight: "100vh",
+    paddingTop: "6rem",
+    zIndex: 1000,
+    [theme.breakpoints.up("md")]: {
+      position: "relative"
+    }
+  },
+  close: {
+    position: "absolute",
+    top: "1rem",
+    right: "4rem"
+  },
+  sidebarGrid: {
+    marginBottom: "6rem",
+    paddingRight: theme.spacing(2)
+  },
+  detailGrid: {
+    paddingLeft: theme.spacing(2)
   }
 });
 
@@ -190,14 +217,14 @@ const App = () => {
           </Toolbar>
         </AppBar>
         <Container maxWidth="lg">
-          <Grid container>
-              <Grid item xs={12} lg={4}>
+          <Grid container className={classes.gridContainer}>
+              <Grid item xs={12} md={6} lg={4} className={classes.sidebarGrid}>
                 <Sidebar vocabs={vocabs} onClick={handleOnClick} onOpenNewVocabModal={openModal} />
               </Grid>
-              <Grid item xs={12} lg={8}>
+              <Grid item xs={12} md={6} lg={8} className={classes.detailGrid}>
 
                 {/* detail */}
-                <Slide direction="left" in={isDetailOpen} mountOnEnter unmountOnExit>
+                <Slide className={classes.slide} direction="left" in={isDetailOpen} mountOnEnter unmountOnExit>
                   {isEditing ? (
                     <Paper className={classes.root}>
                           <IconButton className={classes.close} onClick={closeDetail}>
