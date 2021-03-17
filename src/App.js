@@ -93,12 +93,6 @@ const App = () => {
     setInputs({...inputs, [e.target.name]: e.target.value})
   }
 
-  const handleOnAddDefinition = () => {
-    const newDef = {value: inputs.definition, vocabulary: vocab.id}
-    addDefinition(newDef)
-    setIsInputOpen(false)
-  }
-
   const updateVocabs = () => {
     axios
       .get('https://vocabook-app.herokuapp.com/api/vocabularies/')
@@ -107,9 +101,17 @@ const App = () => {
     );
   }
 
+  const updateVocab = (id) => {
+    axios
+      .get(`https://vocabook-app.herokuapp.com/api/vocabularies/${id}`)
+      .then(res => setVocab(res.data))
+      .catch(err => console.log(err)
+    );
+  }
+
   // get data
   useEffect(() => {
-    updateVocabs();
+    updateVocabs()
   }, []);
 
   useEffect(() => {
@@ -190,7 +192,7 @@ const App = () => {
     axios
       .post('https://vocabook-app.herokuapp.com/api/definitions/', newDef)
       .then(res => {
-        updateVocabs()
+        updateVocab(vocab.id)
       })
       .catch(err => console.log(err))
   }
@@ -228,6 +230,12 @@ const App = () => {
   const submit = () => {
     patchVocab(vocab, true, true)
     setIsEditing(false)
+  }
+
+  const submitDefinition = () => {
+    const newDef = {value: inputs.definition, vocabulary: vocab.id}
+    addDefinition(newDef, false)
+    setIsInputOpen(false)
   }
 
   const classes = useStyles();
@@ -325,7 +333,7 @@ const App = () => {
                                     <>
                                       <TextField variant='outlined' name='definition' value={inputs.definition} onChange={handleOnInputChange} />
                                       <Box display="flex" flexDirection="row" justifyContent="space-between">
-                                        <Button variant="contained" color="primary" style={{width: "48%", minWidth: 0, marginTop: theme.spacing(2)}} onClick={handleOnAddDefinition}>追加</Button>
+                                        <Button variant="contained" color="primary" style={{width: "48%", minWidth: 0, marginTop: theme.spacing(2)}} onClick={submitDefinition}>追加</Button>
                                         <Button variant="outlined" color="primary" style={{width: "48%", minWidth: 0, marginTop: theme.spacing(2)}} onClick={closeInput}>キャンセル</Button>
                                       </Box>
                                     </>
