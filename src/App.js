@@ -100,15 +100,9 @@ const App = () => {
       .catch(err => console.log(err))
   }
 
-<<<<<<< HEAD
-  const patchVocab = (data, id=newVocabId) => {
-    axios
-      .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${id}`, data)
-=======
   const patchVocab = (vocab) => {
     axios
       .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${vocab.id}`, {date: vocab.date})
->>>>>>> dev
       .then(res => { 
         updateVocabs();
       })
