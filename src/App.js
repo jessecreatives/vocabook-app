@@ -19,6 +19,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import {ThemeProvider, makeStyles} from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Sidebar from './components/Sidebar';
 import './App.css';
 import Detail from './components/Detail';
@@ -38,7 +39,8 @@ const useStyles = makeStyles({
     left: 0,
     width: "100%",
     minHeight: "100vh",
-    paddingTop: "6rem",
+    paddingTop: theme.spacing(8),
+    paddingBottom: theme.spacing(8),
     zIndex: 1000,
     [theme.breakpoints.up("md")]: {
       position: "relative"
@@ -50,24 +52,27 @@ const useStyles = makeStyles({
     right: "4rem"
   },
   sidebarGrid: {
-    marginBottom: "6rem",
+    marginBottom: theme.spacing(6),
     paddingRight: theme.spacing(2)
   },
   detailGrid: {
-    paddingLeft: theme.spacing(2)
-  }
+    marginBottom: theme.spacing(6),
+    paddingLeft: theme.spacing(2),
+  },
 });
 
 const App = () => {
-  const [vocabs, setVocabs] = useState([]);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [isNewVocabModalOpen, setIsNewVocabModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const matches = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const [vocabs, setVocabs] = useState([])
+  const [isDetailOpen, setIsDetailOpen] = useState(false)
+  const [isNewVocabModalOpen, setIsNewVocabModalOpen] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
 
   const [inputs, setInputs] = useState({
     definition: '',
     example: ''
-  });
+  })
   
   const [vocab, setVocab] = useState({
     id: '',
@@ -76,17 +81,26 @@ const App = () => {
     pronounce: '',
     definitions: [],
     examples: []
-  });
+  })
 
   const [newVocabId, setNewVocabId] = useState(null)
-  const [isInputOpen, setIsInputOpen] = useState(false)
+  const [isDefInputOpen, setIsDefInputOpen] = useState(false)
+  const [isExampleInputOpen, setIsExampleInputOpen] = useState(false)
 
-  const openInput = () => {
-    setIsInputOpen(true)
+  const openDefInput = () => {
+    setIsDefInputOpen(true)
   }
 
-  const closeInput = () => {
-    setIsInputOpen(false)
+  const closeDefInput = () => {
+    setIsDefInputOpen(false)
+  }
+
+  const openExampleInput = () => {
+    setIsExampleInputOpen(true)
+  }
+
+  const closeExampleInput = () => {
+    setIsExampleInputOpen(false)
   }
 
   const handleOnInputChange = (e) => {
@@ -98,7 +112,7 @@ const App = () => {
       .get('https://vocabook-app.herokuapp.com/api/vocabularies/')
       .then(res => setVocabs(res.data))
       .catch(err => console.log(err)
-    );
+    )
   }
 
   const updateVocab = (id) => {
@@ -106,17 +120,17 @@ const App = () => {
       .get(`https://vocabook-app.herokuapp.com/api/vocabularies/${id}`)
       .then(res => setVocab(res.data))
       .catch(err => console.log(err)
-    );
+    )
   }
 
   // get data
   useEffect(() => {
     updateVocabs()
-  }, []);
+  }, [])
 
   useEffect(() => {
     updateVocabs();
-  }, [newVocabId]);
+  }, [newVocabId])
 
   const handleOnClick = (e) => {
     // find the vocab from vocabs
@@ -125,22 +139,22 @@ const App = () => {
     const {id, date, title, pronounce, definitions, examples} = targetVocab;
     setVocab({id, date, title, pronounce, definitions, examples});
     // open detail
-    setIsDetailOpen(true);
+    setIsDetailOpen(true)
   }
 
   const closeDetail = (e) => {
     e.preventDefault();
-    setIsDetailOpen(false);
+    setIsDetailOpen(false)
   }
 
   const openModal = (e) => {
     e.preventDefault();
-    setIsNewVocabModalOpen(true);
+    setIsNewVocabModalOpen(true)
   }
 
   const closeModal = (e) => {
     e.preventDefault();
-    setIsNewVocabModalOpen(false);
+    setIsNewVocabModalOpen(false)
   }
 
   const addVocab = (newVocab) => {
@@ -207,14 +221,14 @@ const App = () => {
       setIsDetailOpen(false);
   }
 
-  const addExample = (newExample) => {
-    if (!newExample.vocabulary) {
-      newExample.vocabulary = newVocabId; // pass in new vocab id
+  const addExample = (newExample, addVocabId=false) => {
+    if (addVocabId) {
+      newExample.vocabulary = newVocabId;
     }
     axios
       .post('https://vocabook-app.herokuapp.com/api/examples/', newExample)
       .then(res => {
-        updateVocabs()
+        updateVocab(vocab.id)
       })
       .catch(err => console.log(err))
   }
@@ -235,7 +249,13 @@ const App = () => {
   const submitDefinition = () => {
     const newDef = {value: inputs.definition, vocabulary: vocab.id}
     addDefinition(newDef, false)
-    setIsInputOpen(false)
+    setIsDefInputOpen(false)
+  }
+
+  const submitExample = () => {
+    const newExample = {value: inputs.example, vocabulary: vocab.id}
+    addExample(newExample, false)
+    setIsExampleInputOpen(false)
   }
 
   const classes = useStyles();
@@ -243,7 +263,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       {isNewVocabModalOpen && <NewVocabModal isOpen={isNewVocabModalOpen} onClose={closeModal} onAddVocab={addVocab} onAddDefinition={addDefinition} onAddExample={addExample} onPatchVocab={patchVocab} />}
-      <div className={classes.root}>
+      <Box position="relative">
         <AppBar position="static" color="transparent">
           <Toolbar>
             <IconButton>
@@ -266,9 +286,11 @@ const App = () => {
                 <Slide className={classes.slide} direction="left" in={isDetailOpen} mountOnEnter unmountOnExit>
                   {isEditing ? (
                     <Paper className={classes.root}>
-                          <IconButton className={classes.close} onClick={closeDetail}>
+                          {matches && (
+                            <IconButton className={classes.close} onClick={closeDetail}>
                               <CloseIcon/>
-                          </IconButton>
+                            </IconButton>
+                          )}
 
                           {/* date and edit button */}
                           <Box display="flex" flexDirection="row"  justifyContent="space-between" alignItems="center" style={{marginBottom: theme.spacing(4)}}>
@@ -284,6 +306,7 @@ const App = () => {
                             <TextField style={{marginRight: theme.spacing(3)}} variant="outlined" value={vocab.title} onChange={(e) => setVocab({...vocab, title: e.target.value})} />
                             <TextField variant="outlined" value={vocab.pronounce} onChange={(e) => setVocab({...vocab, pronounce: e.target.value})} />
                           </Box>
+
                           {/* definitions */}
                           <Box style={{marginBottom: theme.spacing(3), borderBottom: "0.1rem solid rgba(0, 0, 0, 0.12)", paddingBottom: theme.spacing(3)}}>
                               <Typography variant="h2" style={{marginBottom: theme.spacing(1)}}>定義</Typography>
@@ -293,6 +316,7 @@ const App = () => {
                                   ))}
                               </List>
                           </Box>
+
                           {/* examples */}
                           <Box style={{marginBottom: theme.spacing(3), borderBottom: "0.1rem solid rgba(0, 0, 0, 0.12)", paddingBottom: theme.spacing(3)}}>
                               <Typography variant="h2" style={{marginBottom: theme.spacing(1)}}>例文</Typography>
@@ -309,9 +333,12 @@ const App = () => {
                       </Paper>
                   ) : (
                     <Paper className={classes.root}>
-                          <IconButton className={classes.close} onClick={closeDetail}>
+                          {matches && (
+                            <IconButton className={classes.close} onClick={closeDetail}>
                               <CloseIcon/>
-                          </IconButton>
+                            </IconButton>
+                          )}
+
                           {/* date and edit button */}
                           <Box display="flex" flexDirection="row"  justifyContent="space-between" alignItems="center" style={{marginBottom: theme.spacing(4)}}>
                               <Typography variant="body1">{vocab.date}</Typography>
@@ -329,16 +356,16 @@ const App = () => {
                               <Typography variant="h2" style={{marginBottom: theme.spacing(2)}}>定義</Typography>
                               <List>
                                   {vocab.definitions.filter(d => d.value !== '').map((d, i) => <ListItem disableGutters key={i} style={{marginBottom: theme.spacing(2)}}>{i+1}. {d.value}</ListItem>)}
-                                  {isInputOpen ? (
+                                  {isDefInputOpen ? (
                                     <>
                                       <TextField variant='outlined' name='definition' value={inputs.definition} onChange={handleOnInputChange} />
                                       <Box display="flex" flexDirection="row" justifyContent="space-between">
                                         <Button variant="contained" color="primary" style={{width: "48%", minWidth: 0, marginTop: theme.spacing(2)}} onClick={submitDefinition}>追加</Button>
-                                        <Button variant="outlined" color="primary" style={{width: "48%", minWidth: 0, marginTop: theme.spacing(2)}} onClick={closeInput}>キャンセル</Button>
+                                        <Button variant="outlined" color="primary" style={{width: "48%", minWidth: 0, marginTop: theme.spacing(2)}} onClick={closeDefInput}>キャンセル</Button>
                                       </Box>
                                     </>
                                   ) : (
-                                    <Button variant="text" color="secondary" style={{padding: 0, minWidth: 0}} onClick={openInput}>+ 定義</Button>
+                                    <Button variant="text" color="secondary" style={{padding: 0, minWidth: 0}} onClick={openDefInput}>+ 定義</Button>
                                   )}
                               </List>
                           </Box>
@@ -346,13 +373,24 @@ const App = () => {
                           <Box style={{marginBottom: theme.spacing(4), borderBottom: "0.1rem solid rgba(0, 0, 0, 0.12)", paddingBottom: theme.spacing(3)}}>
                               <Typography variant="h2" style={{marginBottom: theme.spacing(2)}}>例文</Typography>
                               <List>
-                                  {vocab.examples.map((example, i) => (
-                                      <ListItem disableGutters key={i}>{i+1}. {example.value}</ListItem>
+                                  {vocab.examples.filter(example => example.value !== '').map((example, i) => (
+                                      <ListItem disableGutters key={i} style={{marginBottom: theme.spacing(2)}}>{i+1}. {example.value}</ListItem>
                                   ))}
+                                  {isExampleInputOpen ? (
+                                    <>
+                                      <TextField variant='outlined' name='example' value={inputs.example} onChange={handleOnInputChange} />
+                                      <Box display="flex" flexDirection="row" justifyContent="space-between">
+                                        <Button variant="contained" color="primary" style={{width: "48%", minWidth: 0, marginTop: theme.spacing(2)}} onClick={submitExample}>追加</Button>
+                                        <Button variant="outlined" color="primary" style={{width: "48%", minWidth: 0, marginTop: theme.spacing(2)}} onClick={closeExampleInput}>キャンセル</Button>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <Button variant="text" color="secondary" style={{padding: 0, minWidth: 0}} onClick={openExampleInput}>+ 例文</Button>
+                                  )}
                               </List>
                           </Box>
                           {/* delete button */}
-                          <IconButton style={{color: "#f50057", position: "absolute", right: "4rem", bottom: "4rem"}} onClick={() => deleteVocab(vocab.id)}>
+                          <IconButton style={{color: "#f50057", position: "absolute", right: "4rem", bottom: "3rem"}} onClick={() => deleteVocab(vocab.id)}>
                               <DeleteForeverOutlinedIcon/>
                           </IconButton>
                       </Paper>
@@ -363,7 +401,7 @@ const App = () => {
               </Grid>
           </Grid>
         </Container>
-      </div>
+      </Box>
     </ThemeProvider>
   );
 };
