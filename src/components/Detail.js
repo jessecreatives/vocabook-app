@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -10,6 +10,7 @@ import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined'
 import CloseIcon from '@material-ui/icons/Close';
 import {createMuiTheme, makeStyles} from '@material-ui/core/styles';
 import { Slide } from '@material-ui/core';
+import {VocabContext} from '../contexts/Contexts';
 
 const useStyles = makeStyles({
     root: {
@@ -34,6 +35,10 @@ const theme = createMuiTheme();
 export default function Detail({vocab, onClickCloseDetail, onDelete, isOpen}) {
     const classes = useStyles();
 
+    const [input, setInput] = useState(vocab);
+    console.log(input);
+    
+    
     const handleDelete = e => {
         e.preventDefault();
         onDelete(vocab.id);
@@ -41,7 +46,8 @@ export default function Detail({vocab, onClickCloseDetail, onDelete, isOpen}) {
 
     return (
         <Slide direction="left" in={isOpen} mountOnEnter unmountOnExit>
-            <Paper className={classes.root}>
+            {vocab ? (
+                <Paper className={classes.root}>
                 <IconButton className={classes.close} onClick={onClickCloseDetail}>
                     <CloseIcon/>
                 </IconButton>
@@ -80,6 +86,7 @@ export default function Detail({vocab, onClickCloseDetail, onDelete, isOpen}) {
                     <DeleteForeverOutlinedIcon/>
                 </IconButton>
             </Paper>
+            ) : null}
         </Slide>
     )
 }

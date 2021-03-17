@@ -2,17 +2,25 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
 import AppBar from '@material-ui/core/AppBar';
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Slide from '@material-ui/core/Slide';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
+import CloseIcon from '@material-ui/icons/Close';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import {ThemeProvider, makeStyles} from '@material-ui/core/styles';
 import Sidebar from './components/Sidebar';
 import './App.css';
-import {data} from './data';
 import Detail from './components/Detail';
 import {theme} from './styles/Theme';
 import NewVocabModal from './components/NewVocabModal';
@@ -27,6 +35,7 @@ const App = () => {
   const [vocabs, setVocabs] = useState([]);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isNewVocabModalOpen, setIsNewVocabModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   
   const [vocab, setVocab] = useState({
     id: '',
@@ -91,9 +100,9 @@ const App = () => {
       .catch(err => console.log(err))
   }
 
-  const patchVocab = (data) => {
+  const patchVocab = (vocab) => {
     axios
-      .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${newVocabId}`, data)
+      .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${vocab.id}`, {date: vocab.date})
       .then(res => { 
         updateVocabs();
       })
@@ -104,7 +113,6 @@ const App = () => {
     if (!newDef.vocabulary) {
       newDef.vocabulary = newVocabId; // pass in new vocab id
     }
-    console.log(newDef);
     
     axios
       .post('https://vocabook-app.herokuapp.com/api/definitions/', newDef)
@@ -136,6 +144,15 @@ const App = () => {
       .catch(err => console.log(err))
   }
 
+  const edit = () => {
+    setIsEditing(true)
+  }
+
+  const submit = () => {
+    patchVocab(vocab)
+    setIsEditing(false)
+  }
+
   const classes = useStyles();
 
   return (
@@ -159,7 +176,93 @@ const App = () => {
                 <Sidebar vocabs={vocabs} onClick={handleOnClick} onOpenNewVocabModal={openModal} />
               </Grid>
               <Grid item xs={12} lg={8}>
-                <Detail vocab={vocab} onClickCloseDetail={closeDetail} onDelete={deleteVocab} isOpen={isDetailOpen} />
+
+                {/* detail */}
+                <Slide direction="left" in={isDetailOpen} mountOnEnter unmountOnExit>
+                  {isEditing ? (
+                    <Paper className={classes.root}>
+                          <IconButton className={classes.close} onClick={closeDetail}>
+                              <CloseIcon/>
+                          </IconButton>
+
+                          {/* date and edit button */}
+                          <Box display="flex" flexDirection="row"  justifyContent="space-between" alignItems="center" style={{marginBottom: theme.spacing(4)}}>
+                              <TextField variant="outlined" value={vocab.date} onChange={(e) => setVocab({...vocab, date: e.target.value})} />
+                              <Button variant="outlined" color="primary" onClick={submit}>保存</Button>
+                          </Box>
+
+                          {/* title and pronounce */}
+                          <Box display="flex" flexDirection="row" alignItems="flex-end" style={{marginBottom: theme.spacing(6)}}>
+                              <Typography variant="h1" style={{marginRight: theme.spacing(3)}}>{vocab.title}</Typography>
+                              <Typography>{vocab.pronounce}</Typography>
+                          </Box>
+                          {/* definitions */}
+                          <Box style={{marginBottom: theme.spacing(4)}}>
+                              <Typography variant="h2">定義</Typography>
+                              <List>
+                                  {vocab.definitions.map((d, i) => (
+                                      <ListItem disableGutters key={i}>{i+1}. {d.value}</ListItem>
+                                  ))}
+                              </List>
+                          </Box>
+                          {/* examples */}
+                          <Box>
+                              <Typography variant="h2">例文</Typography>
+                              <List>
+                                  {vocab.examples.map((example, i) => (
+                                      <ListItem disableGutters key={i}>{i+1}. {example.value}</ListItem>
+                                  ))}
+                              </List>
+                          </Box>
+                          {/* delete button */}
+                          <IconButton style={{color: "#f50057", position: "absolute", right: "4rem", bottom: "4rem"}} onClick={() => deleteVocab(vocab.id)}>
+                              <DeleteForeverOutlinedIcon/>
+                          </IconButton>
+                      </Paper>
+                  ) : (
+                    <Paper className={classes.root}>
+                          <IconButton className={classes.close} onClick={closeDetail}>
+                              <CloseIcon/>
+                          </IconButton>
+                          {/* date and edit button */}
+                          <Box display="flex" flexDirection="row"  justifyContent="space-between" alignItems="center" style={{marginBottom: theme.spacing(4)}}>
+                              <Typography variant="body1">{vocab.date}</Typography>
+                              <IconButton color="secondary" onClick={edit}>
+                                  <EditOutlinedIcon/>
+                              </IconButton>
+                          </Box>
+                          {/* title and pronounce */}
+                          <Box display="flex" flexDirection="row" alignItems="flex-end" style={{marginBottom: theme.spacing(6)}}>
+                              <Typography variant="h1" style={{marginRight: theme.spacing(3)}}>{vocab.title}</Typography>
+                              <Typography>{vocab.pronounce}</Typography>
+                          </Box>
+                          {/* definitions */}
+                          <Box style={{marginBottom: theme.spacing(4)}}>
+                              <Typography variant="h2">定義</Typography>
+                              <List>
+                                  {vocab.definitions.map((d, i) => (
+                                      <ListItem disableGutters key={i}>{i+1}. {d.value}</ListItem>
+                                  ))}
+                              </List>
+                          </Box>
+                          {/* examples */}
+                          <Box>
+                              <Typography variant="h2">例文</Typography>
+                              <List>
+                                  {vocab.examples.map((example, i) => (
+                                      <ListItem disableGutters key={i}>{i+1}. {example.value}</ListItem>
+                                  ))}
+                              </List>
+                          </Box>
+                          {/* delete button */}
+                          <IconButton style={{color: "#f50057", position: "absolute", right: "4rem", bottom: "4rem"}} onClick={() => deleteVocab(vocab.id)}>
+                              <DeleteForeverOutlinedIcon/>
+                          </IconButton>
+                      </Paper>
+                  )}
+                </Slide>
+
+
               </Grid>
           </Grid>
         </Container>
