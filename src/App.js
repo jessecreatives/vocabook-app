@@ -102,7 +102,7 @@ const App = () => {
 
   const patchVocab = (vocab) => {
     axios
-      .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${vocab.id}`, {date: vocab.date})
+      .patch(`https://vocabook-app.herokuapp.com/api/vocabularies/${vocab.id}`, {date: vocab.date, title: vocab.title, pronounce: vocab.pronounce})
       .then(res => { 
         updateVocabs();
       })
@@ -193,8 +193,8 @@ const App = () => {
 
                           {/* title and pronounce */}
                           <Box display="flex" flexDirection="row" alignItems="flex-end" style={{marginBottom: theme.spacing(6)}}>
-                              <Typography variant="h1" style={{marginRight: theme.spacing(3)}}>{vocab.title}</Typography>
-                              <Typography>{vocab.pronounce}</Typography>
+                            <TextField variant="outlined" value={vocab.title} onChange={(e) => setVocab({...vocab, title: e.target.value})} />
+                            <TextField variant="outlined" value={vocab.pronounce} onChange={(e) => setVocab({...vocab, pronounce: e.target.value})} />
                           </Box>
                           {/* definitions */}
                           <Box style={{marginBottom: theme.spacing(4)}}>
