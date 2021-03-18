@@ -21,7 +21,6 @@ import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import {ThemeProvider, makeStyles} from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Sidebar from './components/Sidebar';
-import './App.css';
 import Detail from './components/Detail';
 import {theme} from './styles/Theme';
 import NewVocabModal from './components/NewVocabModal';
