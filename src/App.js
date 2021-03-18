@@ -22,6 +22,7 @@ import {ThemeProvider, makeStyles} from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Sidebar from './components/Sidebar';
 import Detail from './components/Detail';
+import './App.css';
 import {theme} from './styles/Theme';
 import NewVocabModal from './components/NewVocabModal';
 
